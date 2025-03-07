@@ -28,17 +28,7 @@ function addListItem(itemName){
     container.appendChild(item);
 }
 
-setInterval(()=>{
-    console.log("new interval")
 
-    load(`/test`,'POST',0).then((res)=>{
-        const container = document.getElementById('listContainer')
-        while(container.hasChildNodes()){container.removeChild(container.lastChild)}
-        for( val of res)
-            addListItem(val)
-    });   
-
-},1000)
 
 
 function load(url,met,returnTyp=2) {
@@ -61,5 +51,25 @@ function load(url,met,returnTyp=2) {
        reject(new Error('Error No results found'))
    })
 }
+
+
+
+
+
+
+// Socket for page update:
+const socket = io();
+
+socket.on('data_added',()=>{
+
+    load(`/test`,'POST',0).then((res)=>{
+        const container = document.getElementById('listContainer')
+        while(container.hasChildNodes()){container.removeChild(container.lastChild)}
+        for( val of res)
+            addListItem(val)
+    });  
+
+})
+
 
 
