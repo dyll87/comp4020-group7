@@ -1,13 +1,20 @@
 from flask import Flask, render_template, request
 from ext import socketio
 from routes import main
-import webbrowser
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'comp4020'
 socketio.init_app(app)
 
-app.a = ["apple","orange"];
+
+from ds import Item, List
+
+app.users = ("Joe","Stu","Dent") 
+
+#populate initial lists
+#app.lists =
+
 
 
 # Register blueprints
