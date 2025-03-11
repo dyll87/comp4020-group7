@@ -1,32 +1,26 @@
 import { createIconButton } from "./icon-button.js";
 
-const IS_INDEX_PAGE = true;
-
 /**
- * populates the top navigation bar
+ * populates the top navigation bar. Nav bar has to have class ".page-wrapper__top-bar"
  * @param title page title
+ * @param isIndexPage true meaning its being called for the index.html page
  */
-export function createNavBar(title: string) {
+export function createNavBar(title: string, isIndexPage: boolean) {
   const nav = document.querySelector(".page-wrapper__top-bar");
 
-  if (nav) {
-    // create heading and append it to nav
-    const heading = document.createElement("h1");
-    heading.innerText = title;
-    heading.classList.add("center", "height-full");
-    nav.appendChild(heading);
+  if (!nav) return;
 
-    // create hamburger-icon
-    const hamburgerIcon = createIconButton("../public/hamburgerIcon.png");
-    hamburgerIcon.classList.add("page-wrapper__icon");
-    // TODO: configure event handlers
-    hamburgerIcon.onclick = () => console.log("clicked");
-    nav.appendChild(hamburgerIcon);
+  // create heading and append it to nav
+  const heading = document.createElement("h1");
+  heading.innerText = title;
+  heading.classList.add("center", "height-full");
+  nav.appendChild(heading);
 
-    // TODO: finish side bar and its animations
-    // create the side bar
-    // createSideBar(IS_INDEX_PAGE, "Sally");
-  }
+  // create hamburger-icon
+  const hamburgerIcon = createIconButton("../public/hamburgerIcon.png");
+  hamburgerIcon.classList.add("page-wrapper__icon");
+  hamburgerIcon.onclick = onSideBarOpen;
+  nav.appendChild(hamburgerIcon);
 }
 
 type SideBarItemType = {
@@ -44,47 +38,96 @@ const sideBarItems: SideBarItemType[] = [
 
 /**
  *creates the side bar component and pairs it to the top bar
- * @param isHome true meaning its being called for the index.html page
+ * @param isIndexPage true meaning its being called for the index.html page
  */
-function createSideBar(isHome: boolean, userName: string) {
-  // get modal
-  const modal = document.createElement("div");
+function createSideBar(isIndexPage: boolean, userName: string) {
   const body = document.getElementById("body");
 
-  if (body && modal) {
-    // append modal to body
-    body.appendChild(modal);
+  // get modal
+  const modal = document.createElement("div");
+  modal.classList.add("modal", "overflow-hidden");
 
-    // header text
-    const h2 = document.createElement("h2");
-    h2.innerText = "Options";
+  if (!body || !modal) return;
 
-    // create list
-    const ul = document.createElement("ul");
-    ul.classList.add("display-col");
+  // append modal to body
+  body.appendChild(modal);
 
-    // add side bar items to list as li
-    sideBarItems.forEach(({ label, displayHome }) => {
-      if ((isHome && displayHome) || !isHome) {
-        const li = document.createElement("li");
-        li.innerText = label;
-        ul.appendChild(li);
-      }
-    });
+  // header text
+  const h2 = document.createElement("h2");
+  h2.innerText = "Options";
 
-    // user name
-    const username = document.createElement("h2");
-    username.innerText = userName;
-    username.classList.add("page-wrapper__username");
+  // close button
+  const closeButton = createIconButton("");
+  closeButton.classList.add("side-bar__close-button", "close-button");
+  closeButton.innerText = "X";
+  closeButton.onclick = onSideBarClose; //closes sidebar
 
-    // create aside and append list to it
-    const aside = document.createElement("aside");
-    aside.classList.add("height-full", "page-wrapper__side-bar");
-    aside.appendChild(h2);
-    aside.appendChild(ul);
-    aside.appendChild(username);
+  // create list
+  const ul = document.createElement("ul");
+  ul.classList.add("display-col");
 
-    // append aside to modal window
-    modal.appendChild(aside);
+  // add side bar items to list as li
+  sideBarItems.forEach(({ label, displayHome }) => {
+    if ((isIndexPage && displayHome) || !isIndexPage) {
+      const li = document.createElement("li");
+      li.innerText = label;
+      ul.appendChild(li);
+    }
+  });
+
+  // user name
+  const username = document.createElement("h2");
+  username.innerText = userName;
+  username.classList.add("page-wrapper__username");
+
+  // create sidebar and append list to it
+  const sidebar = document.createElement("aside");
+  sidebar.id = "side-bar";
+  sidebar.classList.add("height-full", "page-wrapper__side-bar");
+
+  // unmounts modal after close animation
+  sidebar.onanimationend = (ev: AnimationEvent) => {
+    if (sidebar.classList.contains("side-bar--close")) body.removeChild(modal);
+  };
+
+  // add elements to component
+  sidebar.appendChild(h2);
+  sidebar.appendChild(closeButton);
+  sidebar.appendChild(ul);
+  sidebar.appendChild(username);
+
+  // append sidebar to modal window
+  modal.appendChild(sidebar);
+}
+
+/**
+ * Event Handler for opening the side bar
+ */
+function onSideBarOpen() {
+  // TODO: dynamic usernames
+  //   mount the side ba component first
+  createSideBar(true, "Sally");
+  const sidebar = document.getElementById("side-bar");
+  const modal = document.querySelector(".modal");
+
+  //   perform animation
+  if (sidebar && modal) {
+    sidebar.classList.remove("side-bar--close");
+    sidebar.classList.add("side-bar--open");
+    modal.classList.add("background-blur");
+  }
+}
+
+/**
+ * Event Handler for closing the side bar
+ */
+function onSideBarClose() {
+  const sidebar = document.getElementById("side-bar");
+  const modal = document.querySelector(".modal");
+
+  if (sidebar && modal) {
+    sidebar.classList.remove("side-bar--open");
+    sidebar.classList.add("side-bar--close");
+    modal.classList.remove("background-blur");
   }
 }
