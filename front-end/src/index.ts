@@ -1,9 +1,4 @@
-console.log("Hello from TypeScript!");
+import { createNavBar } from "./components/nav-bar.js";
 
-const rr = document.getElementById("body");
-
-if (rr) {
-  const tt = document.createElement("p");
-  tt.innerText = "holla";
-  rr.appendChild(tt);
-}
+// create the top nav bar
+createNavBar("Charles's List");

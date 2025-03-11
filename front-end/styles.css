@@ -28,10 +28,153 @@
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
 }
 
-body {
-  font-family: Arial, sans-serif;
+/* ----- CSS reset ------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-h1 {
-  color: blue;
+* {
+  margin: 0;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+ul,
+ol {
+  list-style: none;
+  padding: unset;
+}
+
+/* ----- FLEX layout ------ */
+
+.display-row {
+  display: flex;
+}
+
+.display-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.no-wrap {
+  flex-wrap: nowrap;
+}
+
+/* Centers the entire content horizontally and vertically within the container */
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Centers grid items both horizontally and vertically within the container */
+.center-grid {
+  display: grid;
+  justify-items: center;
+  align-items: center;
+}
+
+/* --- page wrapper Utility Classes --- */
+
+.page-wrapper {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 4.25rem 1fr;
+}
+
+.page-wrapper__top-bar {
+  background-color: red;
+  position: relative;
+  border-bottom: 2px solid black;
+}
+
+.page-wrapper__icon {
+  position: absolute;
+  top: 50%;
+  right: var(--space-sm);
+  transform: translateY(-50%);
+}
+
+.page-wrapper__side-bar {
+  width: 75%;
+  position: absolute;
+  right: 0;
+  background-color: blue;
+  padding: var(--space-md) var(--space-xl);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.page-wrapper__side-bar > h2 {
+  text-align: center;
+  margin-bottom: var(--space-2xl);
+}
+
+.page-wrapper__side-bar > ul {
+  gap: var(--space-lg);
+}
+
+.page-wrapper__username {
+  margin-bottom: unset !important;
+}
+
+/* .page-wrapper__page-content {
+} */
+
+/* --- Button Utility Classes --- */
+
+.button,
+.icon-button {
+  outline: none;
+  appearance: none;
+  background-color: none;
+}
+
+/* icon button */
+
+.icon-button {
+  height: 40px;
+  aspect-ratio: 1;
+}
+
+.icon-button__icon {
+  width: 30px;
+  height: 24px;
+}
+
+/* --- MSC --- */
+
+.height-full {
+  height: 100%;
+}
+
+.width-full {
+  width: 100%;
+}
+
+.pointable {
+  cursor: pointer;
+}
+
+.border-radius {
+  border-radius: 10px;
+}
+
+.modal {
+  position: absolute;
+  inset: 0;
 }
