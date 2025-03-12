@@ -15,7 +15,7 @@ export interface InitListItem {
   primaryID: string; //id for who created the list (automatically gets added to the list of contributors for this list)
   checkedItems: number;
   totalItems: number;
-  name: string;
+  label: string;
   date: string;
 }
 
@@ -27,4 +27,12 @@ export interface ListContributors {
 export interface CategoryType {
   categoryID: string;
   name: string;
+}
+
+export interface InitList {
+  list: InitListItem[];
+  addList: (initListItem: InitListItem) => void;
+  getList: (listID: string) => InitListItem | undefined;
+  updateList: (initListItem: InitListItem) => boolean;
+  deleteList: (listID: string) => boolean;
 }
