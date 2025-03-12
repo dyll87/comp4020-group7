@@ -58,14 +58,51 @@ ol {
   padding: unset;
 }
 
+/* ----- Font layout ------ */
+.text--xs {
+  font-size: var(--text-xs);
+}
+
+.text--sm {
+  font-size: var(--text-sm);
+}
+
+.text--base {
+  font-size: var(--text-base);
+}
+
+.text--lg {
+  font-size: var(--text-lg);
+}
+
+.text--xl {
+  font-size: var(--text-xl);
+}
+
+.text--2xl {
+  font-size: var(--text-2xl);
+}
+
+.text--3xl {
+  font-size: var(--text-3xl);
+}
+
+.text--4xl {
+  font-size: var(--text-4xl);
+}
+
+.text--5xl {
+  font-size: var(--text-5xl);
+}
+
+.text--6xl {
+  font-size: var(--text-6xl);
+}
+
 /* ----- FLEX layout ------ */
 
 .display-row {
   display: flex;
-}
-
-.display-row--center {
-  align-items: center;
 }
 
 .display-col {
@@ -89,6 +126,10 @@ ol {
 
 .justify--between {
   justify-content: space-between;
+}
+
+.align--center {
+  align-items: center;
 }
 
 .no-wrap {
@@ -163,6 +204,26 @@ ol {
   gap: var(--space-sm);
 }
 
+/* Keyframe for opening */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Keyframe for closing */
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
 /* --- Button Utility Classes --- */
 
 .button,
@@ -174,7 +235,19 @@ ol {
   cursor: pointer;
 }
 
-/* icon button */
+.button--confirmation {
+  width: 100%;
+  border-radius: 10px;
+  padding: var(--space-sm);
+}
+
+.button--cancel {
+  background-color: #ffd3d3;
+}
+
+.button--confirm {
+  background-color: #daffeb;
+}
 
 .icon-button {
   height: 40px;
@@ -251,26 +324,6 @@ ol {
   backdrop-filter: blur(2px);
 }
 
-/* Keyframe for opening */
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-/* Keyframe for closing */
-@keyframes slideOut {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(100%);
-  }
-}
-
 /* --- init list item classes --- */
 
 .initList__container {
@@ -289,4 +342,35 @@ ol {
 .initList__rightSide {
   align-items: flex-end;
   gap: var(--space-md);
+}
+
+/* --- create/edit list classes --- */
+
+.listModal {
+  border: 1px solid black;
+  padding: var(--space-sm) var(--space-md) var(--space-lg);
+  width: 100%;
+  max-width: 22.25rem;
+}
+
+.listModal__title {
+  margin-bottom: var(--space-lg);
+}
+
+.listModal__inputContainer {
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  padding: var(--space-lg) var(--space-md);
+  gap: var(--space-md);
+  width: 100%;
+  margin-bottom: var(--space-xl);
+}
+
+.listModal__buttonsContainer {
+  width: 100%;
+  gap: var(--space-md);
+}
+
+/* --- input classes --- */
+.input {
+  border-radius: 5px;
 }
