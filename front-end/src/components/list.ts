@@ -1,4 +1,5 @@
 import { List, ListItem } from "../types/types";
+import { generateID } from "../utils/generateID.js";
 import { mountListItem } from "./listItem.js";
 
 /**
@@ -23,11 +24,14 @@ const listElement = document.querySelector(".page-wrapper__list");
 
 // add item to list
 function addItem(this: List<ListItem>, item: ListItem, expandable?: boolean) {
+  const id = generateID();
+  item.itemID = id;
   this.list.push(item);
 
   if (!listElement) return;
 
   const { container: li } = mountListItem({
+    itemID: item.itemID,
     label: item.label,
     isRecurring: item.isRecurring,
     amount: item.amount,
@@ -60,8 +64,19 @@ function updateItem(this: List<ListItem>, item: ListItem): boolean {
   return true;
 }
 
-// delete item from list
+/**
+ * deletes an item from the list
+ * @param itemID item ID to delete from list
+ * @returns true if item was deleted false otherwise
+ */
 function deleteItem(this: List<ListItem>, itemID: string): boolean {
   this.list = this.list.filter((item) => item.itemID !== itemID);
-  return this.list.some((item) => item.itemID === itemID);
+
+  // get list item element
+  const li = document.getElementById(itemID);
+
+  if (!li) return false;
+  li.remove();
+
+  return true;
 }

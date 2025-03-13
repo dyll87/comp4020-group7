@@ -1,3 +1,4 @@
+import { generateID } from "../utils/generateID.js";
 import { mountListItem } from "./listItem.js";
 /**
  * factory method for lists. Creates a new instance for every call. should be called once per page
@@ -18,10 +19,13 @@ const listElement = document.querySelector(".page-wrapper__list");
 //   list instance returned
 // add item to list
 function addItem(item, expandable) {
+    const id = generateID();
+    item.itemID = id;
     this.list.push(item);
     if (!listElement)
         return;
     const { container: li } = mountListItem({
+        itemID: item.itemID,
         label: item.label,
         isRecurring: item.isRecurring,
         amount: item.amount,
@@ -50,8 +54,17 @@ function updateItem(item) {
     this.list[index] = item;
     return true;
 }
-// delete item from list
+/**
+ * deletes an item from the list
+ * @param itemID item ID to delete from list
+ * @returns true if item was deleted false otherwise
+ */
 function deleteItem(itemID) {
     this.list = this.list.filter((item) => item.itemID !== itemID);
-    return this.list.some((item) => item.itemID === itemID);
+    // get list item element
+    const li = document.getElementById(itemID);
+    if (!li)
+        return false;
+    li.remove();
+    return true;
 }
