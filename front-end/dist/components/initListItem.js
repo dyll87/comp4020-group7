@@ -1,3 +1,4 @@
+import { addClasses } from "../utils/addClasses.js";
 import { Icon, getImage } from "../utils/getImage.js";
 import { routeToList } from "../utils/routing.js";
 import { createIconButton } from "./iconButton.js";
@@ -14,7 +15,7 @@ export function mountInitListItem({ listID, primaryID, checkedItems, totalItems,
     // label for init list item
     const labelElement = document.createElement("p");
     labelElement.innerText = label;
-    labelElement.classList.add("initList__label");
+    labelElement.classList.add("initList__label", "item__label", "text-lg");
     // current number of items in the list chekced
     const amountCurrent = document.createElement("p");
     amountCurrent.innerText = "" + checkedItems;
@@ -23,20 +24,21 @@ export function mountInitListItem({ listID, primaryID, checkedItems, totalItems,
     amountMax.innerText = "" + totalItems;
     // [current/max] text
     const amountContainer = document.createElement("div");
-    amountContainer.classList.add("initList__amountContainer", "display-row");
+    amountContainer.classList.add("initList__amountContainer", "display-row", "text-md");
     amountContainer.append(amountCurrent, "/", amountMax);
     // TODO: figure out how to get primary vs secondary shoppers
     // primary vs secondary shopper
     const tag = document.createElement("p");
     tag.innerText = "Pri";
+    addClasses(tag, "initList__tag", "text-xs", "center");
     // left buttom container [flex-row]
     const leftButtom = document.createElement("div");
-    leftButtom.classList.add("initList__leftButtom", "display-row");
+    leftButtom.classList.add("initList__leftButtom", "display-row", "align--center");
     leftButtom.append(amountContainer, tag);
     // left side container
     const leftSide = document.createElement("div");
     leftSide.classList.add("initList__leftSide", "display-col");
-    leftSide.append(label, leftButtom);
+    leftSide.append(labelElement, leftButtom);
     // date
     const dateElement = document.createElement("p");
     date && (dateElement.innerText = date);
