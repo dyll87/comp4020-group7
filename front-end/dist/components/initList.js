@@ -3,7 +3,7 @@ import { mountInitListItem } from "./initListItem.js";
  * factory method for lists. Uses the same instance no matter where this is called from
  * @returns returns a list instance
  */
-export function InitializeList() {
+export function InitializeInitList() {
     return LIST;
 }
 // get <ul> from page wrapper
@@ -11,10 +11,10 @@ const listElement = document.querySelector(".page-wrapper__list");
 //   list instance returned
 const LIST = {
     list: [],
-    addList,
-    getList,
-    updateList,
-    deleteList,
+    addItem: addList,
+    getItem: getList,
+    updateItem: updateList,
+    deleteItem: deleteList,
 };
 // add item to list
 function addList(list) {

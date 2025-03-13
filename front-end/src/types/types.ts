@@ -1,10 +1,10 @@
 export interface ListItem {
   listID: string;
   itemID: string;
-  name: string;
+  label: string;
   isRecurring: boolean;
   amount: number;
-  isChecked: boolean;
+  checked: boolean;
   description: string;
   categoryID: string;
   posterID: string;
@@ -29,12 +29,12 @@ export interface CategoryType {
   name: string;
 }
 
-export interface InitList {
-  list: InitListItem[];
-  addList: (initListItem: InitListItem) => void;
-  getList: (listID: string) => InitListItem | undefined;
-  updateList: (initListItem: InitListItem) => boolean;
-  deleteList: (listID: string) => boolean;
+export interface List<T> {
+  list: T[];
+  addItem: (item: T, expandable?: boolean) => void;
+  getItem: (itemID: string) => T | undefined;
+  updateItem: (item: T) => boolean;
+  deleteItem: (itemID: string) => boolean;
 }
 
 export const RecurringItems = [
@@ -61,3 +61,5 @@ export const RecurringItems = [
 ] as const;
 
 export type RecurringItemType = (typeof RecurringItems)[number];
+
+export type ActionButtonType = "checkbox";

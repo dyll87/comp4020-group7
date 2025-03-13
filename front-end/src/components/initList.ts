@@ -1,11 +1,11 @@
-import { InitList, InitListItem } from "../types/types";
+import { List, InitListItem } from "../types/types";
 import { mountInitListItem } from "./initListItem.js";
 
 /**
  * factory method for lists. Uses the same instance no matter where this is called from
  * @returns returns a list instance
  */
-export function InitializeList() {
+export function InitializeInitList() {
   return LIST;
 }
 
@@ -13,16 +13,16 @@ export function InitializeList() {
 const listElement = document.querySelector(".page-wrapper__list");
 
 //   list instance returned
-const LIST: InitList = {
+const LIST: List<InitListItem> = {
   list: [],
-  addList,
-  getList,
-  updateList,
-  deleteList,
+  addItem: addList,
+  getItem: getList,
+  updateItem: updateList,
+  deleteItem: deleteList,
 };
 
 // add item to list
-function addList(this: InitList, list: InitListItem) {
+function addList(this: List<InitListItem>, list: InitListItem) {
   this.list.push(list);
 
   if (!listElement) return;
@@ -31,12 +31,15 @@ function addList(this: InitList, list: InitListItem) {
 }
 
 // get item from list
-function getList(this: InitList, listID: string) {
+function getList(this: List<InitListItem>, listID: string) {
   return this.list.find((list) => list.listID === listID);
 }
 
 // update list item
-function updateList(this: InitList, initListItem: InitListItem): boolean {
+function updateList(
+  this: List<InitListItem>,
+  initListItem: InitListItem
+): boolean {
   //   find the index of the list
   const index = this.list.findIndex(
     (list) => list.listID === initListItem.listID
@@ -51,7 +54,7 @@ function updateList(this: InitList, initListItem: InitListItem): boolean {
 }
 
 // delete item from list
-function deleteList(this: InitList, listID: string): boolean {
+function deleteList(this: List<InitListItem>, listID: string): boolean {
   this.list = this.list.filter((list) => list.listID !== listID);
   return this.list.some((list) => list.listID === listID);
 }
