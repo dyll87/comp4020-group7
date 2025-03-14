@@ -18,7 +18,7 @@ export function InitializeList() {
 const listElement = document.querySelector(".page-wrapper__list");
 //   list instance returned
 // add item to list
-function addItem({ item, expandable, list, }) {
+function addItem({ item, expandable, list, actionButtonType, onActionButtonClick, onClick, showInputDefault, }) {
     // if there if no list element or the list obj isnt passed, end here
     if (!list || !listElement)
         return;
@@ -33,13 +33,14 @@ function addItem({ item, expandable, list, }) {
         checked: item.checked,
         description: item.description,
         category: "Category",
-        //   onActionButtonClick?: () => void,
-        //   onClick?: () => void,
-        actionButtonType: "checkbox",
+        onActionButtonClick,
+        onClick,
+        actionButtonType,
         expandable: expandable || false,
         list,
+        showInputDefault,
     });
-    listElement.appendChild(li);
+    listElement.prepend(li);
 }
 // get item from list
 function getItem(itemID) {

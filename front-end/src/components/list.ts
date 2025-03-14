@@ -1,4 +1,4 @@
-import { List, ListItem } from "../types/types";
+import { ActionButtonType, List, ListItem } from "../types/types";
 import { generateID } from "../utils/generateID.js";
 import { mountListItem } from "./listItem.js";
 
@@ -29,7 +29,19 @@ function addItem(
     item,
     expandable,
     list,
-  }: { item: ListItem; expandable?: boolean; list?: List<ListItem> }
+    actionButtonType,
+    onActionButtonClick,
+    onClick,
+    showInputDefault,
+  }: {
+    item: ListItem;
+    expandable?: boolean;
+    list?: List<ListItem>;
+    actionButtonType: ActionButtonType;
+    onActionButtonClick?: () => void;
+    onClick?: () => void;
+    showInputDefault?: boolean;
+  }
 ) {
   // if there if no list element or the list obj isnt passed, end here
   if (!list || !listElement) return;
@@ -46,13 +58,14 @@ function addItem(
     checked: item.checked,
     description: item.description,
     category: "Category",
-    //   onActionButtonClick?: () => void,
-    //   onClick?: () => void,
-    actionButtonType: "checkbox",
+    onActionButtonClick,
+    onClick,
+    actionButtonType,
     expandable: expandable || false,
     list,
+    showInputDefault,
   });
-  listElement.appendChild(li);
+  listElement.prepend(li);
 }
 
 // get item from list
