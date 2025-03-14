@@ -7,8 +7,25 @@ const IS_EXPANDABLE = true;
 mountPageWrapper({
     title: "List 1",
     isIndexPage: IS_INDEX_PAGE,
-    onAddClick: () => List.addItem(TemplateItem, IS_EXPANDABLE),
+    onAddClick: () => List.addItem({ item: TemplateItem, expandable: IS_EXPANDABLE, list: List }),
     onsuggestClick: () => { },
 });
 // exportable to make it global
 export const List = InitializeList();
+/** ------FOR TESTING  ---------------- */
+// const { container } = mountListItem({
+//   itemID: TemplateItem.itemID,
+//   label: TemplateItem.label,
+//   isRecurring: TemplateItem.isRecurring,
+//   amount: TemplateItem.amount,
+//   checked: TemplateItem.checked,
+//   description: TemplateItem.description,
+//   category: "Category",
+//   //   onActionButtonClick?: () => void,
+//   //   onClick?: () => void,
+//   actionButtonType: "checkbox",
+//   expandable: true,
+//   list: List,
+// });
+// const listElement = document.querySelector(".page-wrapper__list");
+// listElement && listElement.append(container);

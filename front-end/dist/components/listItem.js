@@ -1,10 +1,8 @@
-import { List } from "../list.js";
 import { addClasses } from "../utils/addClasses.js";
 import { createInput } from "../utils/createInput.js";
 import { Icon, getImage } from "../utils/getImage.js";
 import { onLongPress } from "../utils/longPress.js";
 import { createIconButton } from "./iconButton.js";
-import { mountMenu } from "./menu.js";
 /**
  * mounts a list item.
  * @param itemID id for the item
@@ -19,12 +17,13 @@ import { mountMenu } from "./menu.js";
  * @param onClick call back function for clicking the list item iteself
  * @param actionButtonType type of action button to display, checkbox by default [checkbox]
  * @param expandable true if item is expandable
+ * @param list list object for page this item is associated with
  */
-export function mountListItem({ itemID, classNames, label, isRecurring, amount, checked, description, category, onActionButtonClick, onClick, actionButtonType = "checkbox", expandable, }) {
+export function mountListItem({ itemID, classNames, label, isRecurring, amount, checked, description, category, onActionButtonClick, onClick, actionButtonType = "checkbox", expandable, list, }) {
     // label
     const label_ = document.createElement("p");
     label_.innerText = label;
-    addClasses(label_, "item__label", "hidden");
+    addClasses(label_, "item__label", "hidden", "text-md");
     //   recurring
     const star = document.createElement("p");
     star.innerText = "⭐";
@@ -35,23 +34,40 @@ export function mountListItem({ itemID, classNames, label, isRecurring, amount, 
         id: "label--input",
         name: "label",
     });
-    addClasses(labelInput, "item__labelInput");
+    addClasses(labelInput, "item__labelInput", "input--subtle");
     labelInput.autofocus = true;
+    labelInput.tabIndex = 0;
     labelInput.placeholder = "Enter item name";
     labelInput.required = true;
-    labelInput.maxLength = 150;
+    labelInput.maxLength = 50;
     //   prevent click from expanding item
     labelInput.addEventListener("click", (ev) => ev.stopPropagation());
     //   handle label submit
     labelInput.addEventListener("change", () => {
+        const isValid = labelInput.checkValidity();
+        if (!isValid) {
+            labelInput.focus();
+            return;
+        }
         labelInput.value && (label_.innerText = labelInput.value);
         swapLabel();
+    });
+    // on blur if the input is invalid refocus the input
+    labelInput.addEventListener("blur", () => {
+        if (!labelInput.checkValidity()) {
+            labelInput.focus();
+            return;
+        }
     });
     // swap label and input
     function swapLabel() {
         labelInput.classList.toggle("hidden");
         label_.classList.toggle("hidden");
         star.classList.toggle("hidden");
+        if (expandable && !label_.classList.contains("hidden"))
+            container.addEventListener("click", expandItem);
+        else
+            container.removeEventListener("click", expandItem);
     }
     // on long press of label, swap it with input
     onLongPress(label_, swapLabel);
@@ -104,12 +120,13 @@ export function mountListItem({ itemID, classNames, label, isRecurring, amount, 
     //   item description
     const description_ = document.createElement("p");
     description_.innerText = description || "Enter description...";
-    addClasses(description_, "item__description", "hidden");
+    addClasses(description_, "item__description", "hidden", "text-sm");
     // text area
     const textArea = document.createElement("textarea");
     textArea.value = description || "";
     textArea.placeholder = "Editing description...";
-    addClasses(textArea, "item__descriptionInput", "hidden");
+    addClasses(textArea, "item__descriptionInput", "hidden", "input--subtle");
+    textArea.maxLength = 150;
     textArea.addEventListener("blur", (e) => {
         textArea.value && (description_.innerText = textArea.value);
         swapDescription();
@@ -124,27 +141,38 @@ export function mountListItem({ itemID, classNames, label, isRecurring, amount, 
     // category area
     const category_ = document.createElement("p");
     category && (category_.innerText = category);
-    addClasses(category_, "item__category");
-    // options menu data
-    const menuItems = [
-        { label: "edit" },
-        {
-            label: "delete",
-            onClick: () => List.deleteItem(itemID),
-        },
-    ];
+    addClasses(category_, "item__category", "text-sm");
+    // edit category icon
+    const editIcon = document.createElement("img");
+    editIcon.src = getImage(Icon.Edit);
+    addClasses(editIcon, "item__categoryIcon");
+    // poster <p>
+    const poster = document.createElement("p");
+    poster.innerText = `Posted By: ${"sally"}`;
+    addClasses(poster, "item__poster", "text-xs");
+    // div containing category and its icon for flex
+    const categoryIconContainer = document.createElement("div");
+    addClasses(categoryIconContainer, "item__categoryIconContainer", "display-row", "align--center");
+    categoryIconContainer.append(category_, editIcon);
+    // div containing category and poster for flex
+    const categoryContainer = document.createElement("div");
+    addClasses(categoryContainer, "item__categoryContainer");
+    categoryContainer.append(categoryIconContainer, poster);
+    // TODO: add event for editing category
+    categoryContainer.addEventListener("click", () => { });
     // options button for expanded displays
-    const optionsButton = createIconButton({ src: getImage(Icon.Options) });
-    optionsButton.addEventListener("click", (ev) => {
+    const deleteButton = createIconButton({ src: getImage(Icon.Delete) });
+    deleteButton.addEventListener("click", (ev) => {
         ev.stopPropagation();
-        mountMenu({ trigger: optionsButton, items: menuItems });
+        list.deleteItem(itemID);
     });
+    addClasses(deleteButton, "item__bottomButton");
+    // flex container for category/poster and button
     const buttomContainer = document.createElement("div");
     addClasses(buttomContainer, "item__bottomContainer", "display-row", "justify--between", "align--end", "hidden");
-    buttomContainer.append(category_, optionsButton);
+    buttomContainer.append(categoryContainer, deleteButton);
     // add description and buttom cont to container and add event listener
     container.append(description_, textArea, buttomContainer);
-    container.addEventListener("click", expandItem);
     // expand the expandable item, revealing description and buttom container
     function expandItem() {
         description_.classList.toggle("hidden");
