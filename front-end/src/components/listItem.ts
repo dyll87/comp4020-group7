@@ -138,6 +138,9 @@ export function mountListItem<T>({
   //   get action button
   let actionButton;
   switch (actionButtonType) {
+    case "default":
+      actionButton = document.createElement("div");
+      break;
     // delete case
     case "delete":
       actionButton = createIconButton({
@@ -282,6 +285,9 @@ export function mountListItem<T>({
 
   // add description and buttom cont to container and add event listener
   container.append(description_, textArea, buttomContainer);
+  !showInputDefault &&
+    expandable &&
+    container.addEventListener("click", expandItem);
 
   // expand the expandable item, revealing description and buttom container
   function expandItem() {
