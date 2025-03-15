@@ -36,7 +36,11 @@ const sideBarItems = [
         displayHome: true,
         onClick: () => routeToPage("categories"),
     },
-    { label: "Edit Participants", displayHome: false },
+    {
+        label: "Edit Participants",
+        displayHome: false,
+        onClick: () => routeToPage("categories"),
+    },
     { label: "Notify Others", displayHome: false },
 ];
 /**
