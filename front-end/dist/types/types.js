@@ -55,4 +55,3 @@ export const Categories = [
     "Home & Kitchen",
     "Seasonal Items",
 ];
-export const Participants = [];
