@@ -31,6 +31,8 @@ export interface CategoryType {
 
 export interface List<T> {
   list: T[];
+  primaryID: string;
+  listID?: string;
   addItem: ({
     item,
     expandable,
@@ -84,18 +86,6 @@ export const RecurringItems = [
 export type RecurringItemType = (typeof RecurringItems)[number];
 
 export type ActionButtonType = "default" | "checkbox" | "delete";
-
-export const TemplateItem: ListItem = {
-  listID: "",
-  itemID: "",
-  label: "",
-  isRecurring: false,
-  amount: 0,
-  checked: false,
-  description: "",
-  categoryID: "category",
-  posterID: "",
-};
 
 export const Categories = [
   "Produce",
