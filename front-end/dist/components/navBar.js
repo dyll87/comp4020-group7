@@ -7,7 +7,7 @@ import { createIconButton } from "./iconButton.js";
  * @param title page title
  * @param isIndexPage true meaning its being called for the index.html page
  */
-export function mountNavBar({ title, isIndexPage, }) {
+export function mountNavBar({ title, isIndexPage, userName, }) {
     const nav = document.querySelector(".page-wrapper__top-bar");
     if (!nav)
         return;
@@ -19,7 +19,7 @@ export function mountNavBar({ title, isIndexPage, }) {
     // create hamburger-icon
     const hamburgerIcon = createIconButton({
         src: getImage(Icon.Hamburger),
-        onClick: () => onSideBarOpen(isIndexPage),
+        onClick: () => onSideBarOpen(isIndexPage, userName),
     });
     hamburgerIcon.classList.add("page-wrapper__icon");
     nav.appendChild(hamburgerIcon);
@@ -36,11 +36,7 @@ const sideBarItems = [
         displayHome: true,
         onClick: () => routeToPage("categories"),
     },
-    { 
-        label: "Edit Participants", 
-        displayHome: false ,
-        onClick: () => routeToPage("participants"),
-    },
+    { label: "Edit Participants", displayHome: false },
     { label: "Notify Others", displayHome: false },
 ];
 /**
@@ -99,10 +95,10 @@ function mountSideBar({ isIndexPage, userName, }) {
 /**
  * Event Handler for opening the side bar
  */
-function onSideBarOpen(isIndexPage) {
+function onSideBarOpen(isIndexPage, userName) {
     // TODO: dynamic usernames
     //   mount the side ba component first
-    mountSideBar({ isIndexPage, userName: "Sally" });
+    mountSideBar({ isIndexPage, userName });
     const sidebar = document.getElementById("side-bar");
     const modal = document.querySelector(".modal");
     //   perform animation
