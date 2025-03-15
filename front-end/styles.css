@@ -591,3 +591,25 @@ ol {
   font-size: var(--text-md);
   background-color: #daffeb;
 }
+
+.role-button {
+  margin: 5px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background-color: #f9f9f9;
+  transition: background-color 0.3s ease;
+}
+
+.role-button.selected {
+  background-color: #4caf50;
+  color: white;
+}
+
+.primary-role-button {
+  color: #007bff;
+}
+
+.secondary-role-button {
+  color: #e74c3c;
+}
