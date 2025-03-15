@@ -5,9 +5,9 @@ import { createItemTemplate } from "./utils/createItemTemplate.js";
 import { getUser } from "./utils/getUser.js";
 
 const IS_INDEX_PAGE = false;
-const IS_EXPANDABLE = false;
+const IS_EXPANDABLE = true;
 const showSuggestedButton = false;
-const actionButtonType: ActionButtonType = "delete";
+const actionButtonType: ActionButtonType = "default";
 
 const user = getUser();
 
@@ -29,7 +29,7 @@ mountPageWrapper({
         expandable: IS_EXPANDABLE,
         list,
         actionButtonType,
-        showInputDefault: false,
+        showInputDefault: true,
       });
     }
   },
