@@ -1,8 +1,11 @@
-import { SideBarItemType, User } from "../types/types";
+import { InitListItem, List, SideBarItemType, User } from "../types/types";
 import { addClasses } from "../utils/addClasses.js";
+import { generateID } from "../utils/generateID.js";
 import { Icon, getImage } from "../utils/getImage.js";
+import { nameIteratorNext } from "../utils/listNameIterator.js";
 import { routeToPage } from "../utils/routing.js";
 import { createIconButton } from "./iconButton.js";
+import { mountUserNameModal } from "./userNameModal.js";
 
 /**
  * populates the top navigation bar. Nav bar has to have class ".page-wrapper__top-bar"
@@ -13,10 +16,12 @@ export function mountNavBar({
   title,
   isIndexPage,
   user,
+  list,
 }: {
   title: string;
   isIndexPage: boolean;
   user: User;
+  list?: List<InitListItem>;
 }) {
   const nav = document.querySelector(".page-wrapper__top-bar");
 
@@ -31,31 +36,11 @@ export function mountNavBar({
   // create hamburger-icon
   const hamburgerIcon = createIconButton({
     src: getImage(Icon.Hamburger),
-    onClick: () => onSideBarOpen(isIndexPage, user),
+    onClick: () => onSideBarOpen(isIndexPage, user, list),
   });
   hamburgerIcon.classList.add("page-wrapper__icon");
   nav.appendChild(hamburgerIcon);
 }
-
-const sideBarItems: SideBarItemType[] = [
-  { label: "Home", displayHome: false, onClick: () => routeToPage("") },
-  {
-    label: "Edit Recurring Items",
-    displayHome: true,
-    onClick: () => routeToPage("recurring"),
-  },
-  {
-    label: "Edit Categories",
-    displayHome: true,
-    onClick: () => routeToPage("categories"),
-  },
-  {
-    label: "Edit Participants",
-    displayHome: false,
-    onClick: () => routeToPage("participants"),
-  },
-  { label: "Notify Others", displayHome: false },
-];
 
 /**
  *creates the side bar component and pairs it to the top bar
@@ -65,10 +50,67 @@ const sideBarItems: SideBarItemType[] = [
 function mountSideBar({
   isIndexPage,
   user,
+  list,
 }: {
   isIndexPage: boolean;
   user: User;
+  list?: List<InitListItem>;
 }) {
+  // side bar items
+  const sideBarItems: SideBarItemType[] = [
+    { label: "Home", displayHome: false, onClick: () => routeToPage("") },
+    {
+      label: "Edit Recurring Items",
+      displayHome: true,
+      onClick: () => routeToPage("recurring"),
+    },
+    {
+      label: "Edit Categories",
+      displayHome: true,
+      onClick: () => routeToPage("categories"),
+    },
+    {
+      label: "Edit Participants",
+      displayHome: false,
+      onClick: () => routeToPage("participants"),
+    },
+    {
+      label: "Join List",
+      id: "join",
+      displayHome: true,
+      onClick: () => {
+        mountUserNameModal({
+          mode: "invite",
+          onSubmit: (id: string) => {
+            // create fuggery and add to list
+            const total = Math.round(Math.random() * 100); //total shoping
+            const current = Math.round(Math.random() * total); //current checked
+
+            // date
+            const startTimestamp = Date.now();
+            const endTimestamp = Date.parse("2025-12-25");
+            const randomTimestamp =
+              Math.random() * (endTimestamp - startTimestamp) + startTimestamp;
+
+            const item: InitListItem = {
+              listID: id,
+              primaryID: generateID(),
+              checkedItems: current,
+              totalItems: total,
+              label: nameIteratorNext(),
+              date: new Date(randomTimestamp).toISOString().substring(0, 10),
+            };
+
+            list?.addItem({ item });
+          },
+        });
+
+        onSideBarClose();
+      },
+    },
+    { label: "Notify Others", displayHome: false },
+  ];
+
   const body = document.getElementById("body");
 
   // get modal
@@ -99,10 +141,11 @@ function mountSideBar({
   ul.classList.add("display-col");
 
   // add side bar items to list as li
-  sideBarItems.forEach(({ label, displayHome, onClick }) => {
+  sideBarItems.forEach(({ label, displayHome, onClick, id }) => {
     if ((isIndexPage && displayHome) || !isIndexPage) {
       const li = document.createElement("li");
       li.innerText = label;
+      li.id = `sidebar--${id}`;
       addClasses(li, "text-md");
       ul.appendChild(li);
       onClick && li.addEventListener("click", onClick);
@@ -111,7 +154,7 @@ function mountSideBar({
 
   // user name
   const username = document.createElement("p");
-  username.innerText = user.userName;
+  username.innerText = user.userName || "sally";
   username.classList.add("page-wrapper__username", "text-xl");
 
   // create sidebar and append list to it
@@ -134,10 +177,14 @@ function mountSideBar({
 /**
  * Event Handler for opening the side bar
  */
-function onSideBarOpen(isIndexPage: boolean, user: User) {
+function onSideBarOpen(
+  isIndexPage: boolean,
+  user: User,
+  list?: List<InitListItem>
+) {
   // TODO: dynamic usernames
   //   mount the side ba component first
-  mountSideBar({ isIndexPage, user });
+  mountSideBar({ isIndexPage, user, list });
   const sidebar = document.getElementById("side-bar");
   const modal = document.querySelector(".modal");
 

@@ -1,17 +1,19 @@
 import { addClasses } from "../utils/addClasses.js";
 import { Icon, getImage } from "../utils/getImage.js";
+import { getUser } from "../utils/getUser.js";
 import { routeToList } from "../utils/routing.js";
+import { sendEmail } from "../utils/sendInvite.js";
 import { createIconButton } from "./iconButton.js";
 import { mountMenu } from "./menu.js";
 // options menu data
 const menuItems = [
     { label: "edit" },
-    { label: "share" },
-    { label: "export" },
-    { label: "select" },
+    { label: "share", onClick: sendEmail },
     { label: "delete" },
 ];
 export function mountInitListItem({ listID, primaryID, checkedItems, totalItems, label, date, }) {
+    const { userID } = getUser();
+    const isPrimaryShopper = primaryID === userID;
     // label for init list item
     const labelElement = document.createElement("p");
     labelElement.innerText = label;
@@ -29,8 +31,9 @@ export function mountInitListItem({ listID, primaryID, checkedItems, totalItems,
     // TODO: figure out how to get primary vs secondary shoppers
     // primary vs secondary shopper
     const tag = document.createElement("p");
-    tag.innerText = "Pri";
+    tag.innerText = isPrimaryShopper ? "Pri" : "Sec";
     addClasses(tag, "initList__tag", "text-xs", "center");
+    !isPrimaryShopper && addClasses(tag, "initList__tag--sec");
     // left buttom container [flex-row]
     const leftButtom = document.createElement("div");
     leftButtom.classList.add("initList__leftButtom", "display-row", "align--center");
@@ -42,6 +45,7 @@ export function mountInitListItem({ listID, primaryID, checkedItems, totalItems,
     // date
     const dateElement = document.createElement("p");
     date && (dateElement.innerText = date);
+    addClasses(dateElement, "initList__date");
     // options button
     const optionsButton = createIconButton({
         src: getImage(Icon.Options),
