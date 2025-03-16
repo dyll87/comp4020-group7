@@ -1,3 +1,5 @@
+export type Role = "primary" | "secondary";
+
 export interface ListItem {
   listID: string;
   itemID: string;
@@ -8,7 +10,7 @@ export interface ListItem {
   description: string;
   categoryID: string;
   posterID: string;
-  role: string;
+  role: Role;
 }
 
 export interface InitListItem {
@@ -86,7 +88,12 @@ export const RecurringItems = [
 
 export type RecurringItemType = (typeof RecurringItems)[number];
 
-export type ActionButtonType = "default" | "checkbox" | "delete" | "accept";
+export type ActionButtonType =
+  | "default"
+  | "checkbox"
+  | "delete"
+  | "accept"
+  | "participants";
 
 export const Categories = [
   "Produce",

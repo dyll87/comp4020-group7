@@ -2,30 +2,15 @@ import { InitializeList } from "./components/list.js";
 import { mountPageWrapper } from "./components/pageWrapper.js";
 import { ActionButtonType } from "./types/types";
 import { createItemTemplate } from "./utils/createItemTemplate.js";
+import { generateID } from "./utils/generateID.js";
 import { getUser } from "./utils/getUser.js";
 
 const IS_INDEX_PAGE = false;
-const IS_EXPANDABLE = true;
+const IS_EXPANDABLE = false;
 const showSuggestedButton = false;
-const actionButtonType: ActionButtonType = "default";
+const actionButtonType: ActionButtonType = "participants";
 
 const user = getUser();
-
-function addParticipant() {
-  const newParticipant = createItemTemplate();
-  newParticipant.label = "";
-  newParticipant.description = "New participant";
-  newParticipant.categoryID = "participant";
-  newParticipant.role = "primary";
-
-  list.addItem({
-    item: newParticipant,
-    expandable: false,
-    list,
-    actionButtonType: "delete",
-    showInputDefault: true,
-  });
-}
 
 // Mount page wrapper
 mountPageWrapper({
@@ -37,15 +22,17 @@ mountPageWrapper({
     if (participantName && participantName.trim() !== "") {
       const newParticipant = createItemTemplate();
       newParticipant.label = participantName;
-      newParticipant.description = "Participant added by user";
       newParticipant.categoryID = "participant";
+      newParticipant.role = "secondary";
+      newParticipant.itemID = generateID();
+      newParticipant.posterID = getUser().userID;
 
       list.addItem({
         item: newParticipant,
         expandable: IS_EXPANDABLE,
         list,
         actionButtonType,
-        showInputDefault: true,
+        showInputDefault: false,
       });
     }
   },
@@ -65,4 +52,35 @@ const list = InitializeList({
   onupdateItem: (item) => {
     console.log("item updated...", item);
   },
+});
+
+// add a secondary shopper
+const secondaryShopper = createItemTemplate();
+secondaryShopper.label = "Sally";
+secondaryShopper.itemID = generateID();
+secondaryShopper.posterID = getUser().userID;
+secondaryShopper.categoryID = "participant";
+secondaryShopper.role = "secondary";
+list.addItem({
+  item: secondaryShopper,
+  expandable: IS_EXPANDABLE,
+  list,
+  showInputDefault: false,
+  isFromBackEnd: true,
+  actionButtonType: "participants",
+});
+
+// add the primary shopper
+const primaryShopper = createItemTemplate();
+primaryShopper.label = getUser().userName;
+primaryShopper.itemID = getUser().userID;
+primaryShopper.posterID = getUser().userID;
+primaryShopper.categoryID = "participant";
+list.addItem({
+  item: primaryShopper,
+  expandable: IS_EXPANDABLE,
+  list,
+  showInputDefault: false,
+  isFromBackEnd: true,
+  actionButtonType: "participants",
 });
