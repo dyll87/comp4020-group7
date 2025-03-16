@@ -428,6 +428,10 @@ ol {
   padding: var(--space-md) var(--space-lg);
 }
 
+.item--sec {
+  background-color: grey;
+}
+
 .item__label {
   text-transform: capitalize;
   white-space: nowrap;
@@ -448,6 +452,10 @@ ol {
 
 .item__button--delete {
   background-color: #ffd3d3;
+}
+
+.item__button--accept {
+  gap: var(--space-sm);
 }
 
 .item__descriptionInput {
