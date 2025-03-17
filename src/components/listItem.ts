@@ -4,6 +4,7 @@ import { createInput } from "../utils/createInput.js";
 import { Icon, getImage } from "../utils/getImage.js";
 import { getUser } from "../utils/getUser.js";
 import { onLongPress } from "../utils/longPress.js";
+import { onTouchCancel, onTouchEnd, onTouchMove } from "../utils/touch.js";
 import { createIconButton } from "./iconButton.js";
 
 interface Props {
@@ -296,6 +297,19 @@ export function mountListItem({
   isSuggestedItem && addClasses(container, "hidden");
   onClick && container.addEventListener("click", onClick);
   container.append(topContainer);
+
+  // touch events (drag and drop)
+  container.addEventListener("touchmove", (e) => {
+    onTouchMove(e, container);
+
+    // close expanded items
+    description_.classList.add("hidden");
+    buttomContainer.classList.add("hidden");
+  });
+  container.addEventListener("touchend", (e) =>
+    onTouchEnd(e, container, itemID)
+  );
+  container.addEventListener("touchcancel", (e) => onTouchCancel(e, container));
 
   //   if item is not expandle stop here
   if (!expandable) return { container };
