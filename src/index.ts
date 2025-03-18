@@ -4,20 +4,20 @@ import { mountPageWrapper } from "./components/pageWrapper.js";
 import { getUser } from "./utils/getUser.js";
 
 const IS_INDEX_PAGE = true;
-
 const user = getUser();
 
 // list of lists
 const list = InitializeInitList({
   primaryID: user.userID,
-  onAddItem: (item) => {
-    console.log("item added...", item);
+  onAddItem: (list) => {
+    console.log("list added...", list);
   },
-  ondeleteItem: (itemID) => {
-    console.log("item deleted...", itemID);
+  ondeleteItem: (listID) => {
+    console.log("list deleted...", listID);
+    localStorage.removeItem(`list--${listID}`);
   },
-  onupdateItem: (item) => {
-    console.log("item updated...", item);
+  onupdateItem: (list) => {
+    console.log("list updated...", list);
   },
 });
 
@@ -29,11 +29,12 @@ mountPageWrapper({
     mountListModal({
       mode: ListModalMode.Create,
       list,
-      userID: user.userID,
       onRecurringItemsSubmit: (recurringItemsArray, listID) => {
-        // event for when recurring items are added in a newly created list on submit
-        console.log("recuring items added to list...", recurringItemsArray);
-        console.log("listID they are added to...", listID);
+        // save recurring items to local storage to be pulled back if needed
+        localStorage.setItem(
+          `list--${listID}`,
+          JSON.stringify(recurringItemsArray)
+        );
       },
     }),
   onsuggestClick: () => {},
