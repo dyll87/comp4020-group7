@@ -1,14 +1,19 @@
 import { InitializeList } from "./components/list.js";
 import { mountListItem } from "./components/listItem.js";
 import { mountPageWrapper } from "./components/pageWrapper.js";
-import { ActionButtonType } from "./types/types";
+import { ActionButtonType, ListItem } from "./types/types";
 import { mountCategoryFilter } from "./components/categoryFilter.js";
 import { getUser } from "./utils/getUser.js";
 import { createItemTemplate } from "./utils/createItemTemplate.js";
 import { itemIteratorNext } from "./utils/listItemIterator.js";
 import { generateID } from "./utils/generateID.js";
 import { getURLParam } from "./utils/getURLParam.js";
-import { getListItems } from "./utils/getListItems.js";
+import {
+  addListItem,
+  deleteListItem,
+  getListItems,
+  updateListItem,
+} from "./utils/localStoragAPI.js";
 
 const MAX_SUGGESTED_ITEMS = 4;
 const IS_INDEX_PAGE = false;
@@ -48,12 +53,15 @@ const list = InitializeList({
   listID,
   onAddItem: (item) => {
     console.log("item added...", item);
+    listID && addListItem(listID, item);
   },
   ondeleteItem: (itemID) => {
     console.log("item deleted...", itemID);
+    listID && deleteListItem(listID, itemID);
   },
   onupdateItem: (item) => {
     console.log("item updated...", item);
+    listID && updateListItem(listID, item.itemID, item);
   },
 });
 
@@ -82,7 +90,7 @@ suggestedItems.forEach((itm) => {
 mountCategoryFilter();
 
 // get list items that may be stored in local storage and add them to the list
-const localList = getListItems(listID);
+const localList = getListItems<ListItem>(listID);
 localList?.forEach((item) => {
   list.addItem({
     item,
@@ -90,6 +98,7 @@ localList?.forEach((item) => {
     list: list,
     actionButtonType,
     showInputDefault: false,
+    // isFromBackEnd: true,
   });
 });
 

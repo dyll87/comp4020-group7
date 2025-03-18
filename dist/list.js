@@ -6,7 +6,7 @@ import { createItemTemplate } from "./utils/createItemTemplate.js";
 import { itemIteratorNext } from "./utils/listItemIterator.js";
 import { generateID } from "./utils/generateID.js";
 import { getURLParam } from "./utils/getURLParam.js";
-import { getListItems } from "./utils/getListItems.js";
+import { addListItem, deleteListItem, getListItems, updateListItem, } from "./utils/localStoragAPI.js";
 const MAX_SUGGESTED_ITEMS = 4;
 const IS_INDEX_PAGE = false;
 const IS_EXPANDABLE = true;
@@ -43,12 +43,15 @@ const list = InitializeList({
     listID,
     onAddItem: (item) => {
         console.log("item added...", item);
+        listID && addListItem(listID, item);
     },
     ondeleteItem: (itemID) => {
         console.log("item deleted...", itemID);
+        listID && deleteListItem(listID, itemID);
     },
     onupdateItem: (item) => {
         console.log("item updated...", item);
+        listID && updateListItem(listID, item.itemID, item);
     },
 });
 // generate the suggested items
@@ -81,6 +84,7 @@ localList === null || localList === void 0 ? void 0 : localList.forEach((item) =
         list: list,
         actionButtonType,
         showInputDefault: false,
+        // isFromBackEnd: true,
     });
 });
 /** ------FOR TESTING  ---------------- */
