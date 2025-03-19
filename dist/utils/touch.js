@@ -4,12 +4,14 @@ let startX; //starting X position
 let startY; //starting Y position
 const Y_OFFSET = 50; //offset before movement is registered as vertical
 const X_OFFSET = 10; //offset before movement is registered as horizontal
-const RECURRING_OFFSET = 25; //% offset to register swipe as a recurring item
+const RECURRING_OFFSET = 0.25; //% offset to register swipe as a recurring item
+let maxSwipe; //max swipe distance
 export function onTouchStart(e) {
     // get the start position of the touch event
     const touch = e.touches[0];
     startX = touch.clientX; // X coordinate relative to the viewport
     startY = touch.clientY;
+    maxSwipe = e.currentTarget.offsetWidth * 0.25; // 25% of item width
 }
 /**
  * touch mouve event call back
@@ -24,6 +26,8 @@ export function onTouchMove(e, container, swipeEnabled = false) {
     // X and Y coordinate of touch
     const topPosition = e.changedTouches[0].pageY - document.documentElement.scrollTop;
     const leftPosition = e.changedTouches[0].pageX;
+    // container for swipe background
+    const swipebackground = document.createElement("div");
     // if touch movement passes threshold enable vertical/horizontal, once for every element until touch end/cancel
     if (!touchDirection && Math.abs(startY - topPosition) > Y_OFFSET) {
         touchDirection = "vertical";
@@ -32,6 +36,20 @@ export function onTouchMove(e, container, swipeEnabled = false) {
         !touchDirection &&
         Math.abs(startX - leftPosition) > X_OFFSET) {
         touchDirection = "horizontal";
+        // add background for swipe
+        const draggedItemRect = container.getBoundingClientRect();
+        swipebackground.style.top = draggedItemRect.top + "px";
+        swipebackground.style.left = draggedItemRect.left + "px";
+        swipebackground.style.width = draggedItemRect.width + "px";
+        swipebackground.style.height = draggedItemRect.height + "px";
+        addClasses(swipebackground, "item__swipeBckg", "border-radius");
+        // add icon
+        const swipeIcon = document.createElement("p");
+        swipeIcon.innerText = "⭐";
+        addClasses(swipeIcon, "item_swipeIcon", "display-row", "align--center", "text-xl");
+        // add icon to background and add bacground to page
+        swipebackground.append(swipeIcon);
+        pageWrapper.append(swipebackground);
     }
     // perform verical movement
     if (touchDirection === "vertical") {
@@ -44,7 +62,14 @@ export function onTouchMove(e, container, swipeEnabled = false) {
     else if (touchDirection === "horizontal") {
         // swipe gesture
         container.style.position = "relative";
-        container.style.transform = `translateX(${leftPosition - startX}px)`;
+        // current X coordinate
+        let currentX = leftPosition - startX;
+        // Limit swipe within 25% of width
+        if (currentX > maxSwipe)
+            currentX = maxSwipe;
+        if (currentX < 0)
+            currentX = 0; // Optional: Prevent left swipe
+        container.style.transform = `translateX(${currentX}px)`;
     }
     // overlapped items enlarged
     if (touchDirection === "vertical") {
@@ -120,13 +145,16 @@ export function onTouchEnd(e, container, itemID, isInitList, list) {
     else if (touchDirection === "horizontal") {
         const leftPosition = e.changedTouches[0].pageX; //x coordinate of touch
         const totalWidth = listElement.getBoundingClientRect().width; //width of list element
-        const percentageMoved = (Math.abs(leftPosition - startX) / totalWidth) * 100; //percentage moved by item
+        const percentageMoved = (leftPosition - startX) / totalWidth; //percentage moved by item
         // if percentage moved by item is greater than offset, toggle recurring
         if (percentageMoved > RECURRING_OFFSET && list) {
             const item = list.getItem(itemID);
             item && (item.isRecurring = !item.isRecurring);
             item && list.updateItem(item);
         }
+        // remove swipe background if there is one
+        const swipebackground = document.querySelector(".item__swipeBckg");
+        swipebackground && swipebackground.remove();
     }
     // reset styles
     container.style.position = "static";
@@ -157,6 +185,9 @@ export function onTouchCancel(e, container) {
     container.style.width = "initial";
     container.style.touchAction = "initial";
     touchDirection = undefined; //unset movement direction
+    // remove swipe background if there is one
+    const swipebackground = document.querySelector(".item__swipeBckg");
+    swipebackground && swipebackground.remove();
     if (container.classList.contains("item--sec"))
         container.style.backgroundColor = "grey";
 }

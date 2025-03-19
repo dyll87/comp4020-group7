@@ -452,6 +452,19 @@ ol {
   padding: var(--space-md) var(--space-lg);
 }
 
+.item__swipeBckg {
+  position: fixed;
+  background: #4cec41; /*fall back*/
+  background: linear-gradient(to left, #4cec41 75%, transparent);
+  border: 1px solid white;
+}
+
+.item_swipeIcon {
+  height: 100%;
+  padding-left: var(--space-md);
+  line-height: unset !important;
+}
+
 .item--sec {
   background-color: grey;
 }
