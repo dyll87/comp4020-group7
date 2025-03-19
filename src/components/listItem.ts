@@ -4,7 +4,12 @@ import { createInput } from "../utils/createInput.js";
 import { Icon, getImage } from "../utils/getImage.js";
 import { getUser } from "../utils/getUser.js";
 import { onLongPress } from "../utils/longPress.js";
-import { onTouchCancel, onTouchEnd, onTouchMove } from "../utils/touch.js";
+import {
+  onTouchCancel,
+  onTouchEnd,
+  onTouchMove,
+  onTouchStart,
+} from "../utils/touch.js";
 import { FilterStates } from "./categoryFilter.js";
 import { createIconButton } from "./iconButton.js";
 
@@ -62,12 +67,11 @@ export function mountListItem({
   addClasses(label_, "item__label", "text-md");
   showInputDefault && addClasses(label_, "hidden");
 
-  //   recurring
+  //   recurring item star
   const star = document.createElement("p");
-  star.innerText = "⭐";
+  isRecurring && (star.innerText = "⭐");
   addClasses(star, "item__recurring");
   showInputDefault && addClasses(star, "hidden");
-  !isRecurring && star.remove(); // if its not a recurring item remove it
 
   //   text input for intering data
   const { inputNode: labelInput } = createInput({
@@ -143,8 +147,7 @@ export function mountListItem({
     "display-row",
     "align--center"
   );
-  labelContainer.append(label_, labelInput);
-  isRecurring && labelContainer.append(star);
+  labelContainer.append(label_, labelInput, star);
 
   //   TODO: fix amounts
   // amount of item
@@ -300,16 +303,25 @@ export function mountListItem({
   container.append(topContainer);
 
   // touch events (drag and drop)
+  container.addEventListener("touchstart", onTouchStart);
   container.addEventListener("touchmove", (e) => {
-    onTouchMove(e, container);
+    // only list items on the list.html page are allowed to be swipe-able
+    const isSwipeable = actionButtonType === "checkbox";
+
+    onTouchMove(e, container, isSwipeable);
 
     // close expanded items
     description_.classList.add("hidden");
     buttomContainer.classList.add("hidden");
   });
-  container.addEventListener("touchend", (e) =>
-    onTouchEnd(e, container, itemID)
-  );
+  container.addEventListener("touchend", (e) => {
+    // only list items on the list.html page are allowed to be swipe-able
+    const list_ = actionButtonType === "checkbox" ? list : undefined;
+    const isInitItem = false;
+
+    onTouchEnd(e, container, itemID, isInitItem, list_);
+    star.innerText = item.isRecurring ? "⭐" : ""; //update star depending on recurring or not
+  });
   container.addEventListener("touchcancel", (e) => onTouchCancel(e, container));
 
   // current filter states. intend to subscribe to the changes
